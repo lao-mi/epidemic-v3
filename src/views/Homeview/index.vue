@@ -6,11 +6,13 @@
   </el-carousel>
   <navs class="navs"></navs>
   <emicstatus class="emicstatus"></emicstatus>
+  <newlist class="emicstatus"></newlist>
 </template>
 
 <script setup lang='ts'>
 import emicstatus from '@/components/home/emicstatus/index.vue'
 import navs from '@/components/home/navs/index.vue'
+import newlist from '@/components/home/newlist/index.vue'
 import { ref ,reactive} from 'vue'
 const photolist = reactive([
         {id: 1,url:'http://n.sinaimg.cn/sc/crawl/117/w550h367/20220624/ee2d-bbf98944e8a21f3d7176538e453d79e6.jpg'},

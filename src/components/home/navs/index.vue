@@ -1,10 +1,10 @@
 <template>
   <ul class="nav-list">
-    <li class="clist" @click="mation">校园资讯</li>
-    <li class="clist">健康上报</li>
-    <li class="clist">出入校申请</li>
-    <li class="clist">疫情通知</li>
-    <li class="clist">更多</li>
+    <li class="clist" @click="mation">新闻资讯</li>
+    <li class="clist" @click="sign">健康上报</li>
+    <li class="clist" @click="apply">请假申请</li>
+    <li class="clist" @click="notice">风险地查看</li>
+    <li class="clist" @click="more">更多</li>
   </ul>
 </template>
 
@@ -16,12 +16,23 @@ const router = useRouter()
 function mation(){
   router.push({path:'/explorer/news'})
 }
+function sign(){
+  router.push({path: '/explorer/sign'})
+}
+function apply(){
+  router.push({path: '/explorer/applys'})
+}
+function notice(){
+  router.push({path: '/explorer/notice'})
+}function more(){
+  router.push('/explorer/report')
+}
 </script>
 
 <style lang='less' scoped>
 @color:#5DAAF8;
 .nav-list{
-  margin: 25px 16%;
+  margin: 25px 16% 50px;
   overflow: hidden;
   display: flex;
   justify-content: space-between;

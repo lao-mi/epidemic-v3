@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { useStore } from './store';
+import { onMounted } from 'vue';
 import Header from './components/master/Header/index.vue';
 import Footer from './components/master/Footer/index.vue'
 import { reactive } from 'vue';
-const user = useStore()
-user.test(123)
-console.log(user.leth);
-
+import { useloginStore } from '@/store'
+const uselogin = useloginStore()
+onMounted(()=>{
+    uselogin.userinfo = JSON.parse(localStorage.getItem('userinfo') as string)
+})
 </script>
 
 <template>

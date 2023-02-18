@@ -1,11 +1,11 @@
 <template>
   <div class="steps">
     <el-result :icon="icons" :title="hint"></el-result>
-    <div class="time">每日打卡时间范围:6:00-22:00</div>
-    <el-button @click="jia" class="enter" :disabled="isColck">去打卡</el-button>
+    <div class="time">请在6:00-22:00之间上传！</div>
+    <el-button @click="jia" class="enter" :disabled="isColck">去上传</el-button>
   </div>
   <pop v-model:open="open">
-    <p>未到打卡时间</p>
+    <p>未到上传时间</p>
   </pop>
 </template>
 
@@ -13,12 +13,12 @@
 import pop from '@/components/popover/index.vue'
 import { ref ,reactive,onBeforeMount} from 'vue'
 import { useRouter } from 'vue-router';
-import { toclock } from '@/server';
+import { torep } from '@/server';
 const active = ref<number>(0)
 const router = useRouter()
 const open = ref(false)
 const icons = ref<'success'|'error'>('error')
-const hint = ref('今日未签到！')
+const hint = ref('未上传！')
 const isColck= ref(false)
 // 判断是否为签到时间
 function jia(){
@@ -26,7 +26,7 @@ function jia(){
   if(d>=6 && d<=22){
     active.value = active.value+1
     open.value = false
-    router.push({path:'sfrom'})
+    router.push({path:'reports'})
   }else{
     open.value = true
   }
@@ -34,10 +34,10 @@ function jia(){
 
 onBeforeMount(()=>{
   // 检测今日是否打卡
-  toclock().then((res:any)=>{
+  torep().then((res:any)=>{
     if(res.data.data !== 'allow'){
       icons.value = 'success'
-      hint.value ='今日已签到！'
+      hint.value ='已上传！'
       isColck.value = true
     }
   })

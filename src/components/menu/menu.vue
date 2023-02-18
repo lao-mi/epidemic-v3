@@ -10,22 +10,22 @@
 </template>
 
 <script setup lang='ts'>
-import { Share,Message,Menu,Edit } from '@element-plus/icons-vue'
+import { Menu,Edit,ChatRound,MapLocation,Calendar,Printer } from '@element-plus/icons-vue'
 import { ref ,reactive,markRaw,watch,onMounted} from 'vue'
 import { useRouter } from 'vue-router';
 // 路由数据
 const menu = reactive([
   { 
-    name: '校园资讯',
+    name: '新闻资讯',
     router: 'news',
     action:false,
     icon: markRaw(Menu)
   },
   {
-    name: '疫情通知',
+    name: '风险地查看',
     router: 'notice',
     action:false,
-    icon: markRaw(Message)
+    icon: markRaw(MapLocation)
   },
   {
     name: '健康上报',
@@ -34,11 +34,23 @@ const menu = reactive([
     icon: markRaw(Edit)
   },
   {
-    name: '出入申请',
-    router: '',
+    name: '请假申请',
+    router: 'applys',
     action:false,
-    icon: markRaw(Share)
+    icon: markRaw(Calendar)
   },
+  {
+    name: '二码一报告',
+    router: 'report',
+    action:false,
+    icon: markRaw(ChatRound)
+  },
+  {
+    name: '出入登记',
+    router: 'access',
+    action:false,
+    icon: markRaw(Printer)
+  }
 ])
 const router = useRouter()
 function fn1(rter:string){
@@ -71,14 +83,13 @@ watch(
 .menu{
   margin-top: 50px;
   display: flex;
-  width: 250px;
+  width: 225px;
   flex-flow: column;
   &-inside{
     margin-top: 10px;
     width: 135px;
     line-height: 50px;
     font-size: 18px;
-    text-align: center;
     &:hover{
       border: 1px;
       border-radius: 30px;

@@ -1,9 +1,10 @@
 <template>
-<Teleport to="body">
+  <Teleport to="body">
     <div v-if="open" class="modal">
-      <slot></slot>
-      <br/>
-      <button @click="close">关闭</button>
+      <div class="head">温馨提示</div>
+      <p class="main"><slot></slot></p>
+      <br />
+      <button @click="close" class="footer">确认</button>
     </div>
   </Teleport>
 </template>
@@ -37,5 +38,27 @@ function close(){
   box-shadow: 0px 0px 12px rgba(0, 0, 0, .12);
   z-index: 999;
 }
-
+.head{
+  text-align: center;
+  margin: 10px auto;
+  color: #75B9FC;
+  font-size: 13px;
+}
+.footer{
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 10px;
+  width: 45px;
+  height: 25px;
+  border: 1px solid hsl(240, 78%, 7%);
+  border-radius: 5px;
+}
+.footer:hover{
+  background-color: #c1dffd;
+  box-shadow: 0 0 10px #9addff
+}
+.main{
+  color: rgb(156, 155, 155);
+  text-align: center;
+}
 </style>

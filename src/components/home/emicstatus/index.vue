@@ -5,166 +5,47 @@
     <v-chart class="chart" :option="option" />
     <!-- 最近疫情情况 -->
     <div class="queryLine">
-      <h3>全国疫情情况</h3>
+      <h3>校园周边疫情情况</h3>
+      <div class="headline">四川</div>
+        <div>总计确诊：<span>{{ scdata.sctotal }}</span></div>
+        <div>昨日新增：<span>{{ scdata.sctoday }}</span></div>
+      <div class="headline">成都</div>
+        <div>总计确诊：<span>{{ scdata.cdtotal }}</span></div>
+        <div>昨日新增：<span>{{ scdata.cdtoday }}</span></div>
+      <div class="headline">眉山</div>
+        <div>总计确诊：<span>{{ scdata.mstotal }}</span></div>
+        <div>昨日新增：<span>{{ scdata.mstoday}}</span></div>
     </div>
     </div>
   </el-card>
 </template>
 
 <script setup lang='ts'>
-import { ref,reactive } from "vue";
+import { ref,reactive,onBeforeUpdate,onMounted } from "vue";
+import { getchinamap } from "@/server";
 import china from '@/assets/china.json'
 import * as echarts from 'echarts'
 echarts.registerMap('china',china as any)
 
 // 疫情数据
-const data = reactive([
-        {
-          name: "北京",
-          value: 212,
-        },
-        {
-          name: "天津",
-          value: 60,
-        },
-        {
-          name: "上海",
-          value: 208,
-        },
-        {
-          name: "重庆",
-          value: 337,
-        },
-        {
-          name: "河北",
-          value: 126,
-        },
-        {
-          name: "河南",
-          value: 675,
-        },
-        {
-          name: "云南",
-          value: 117,
-        },
-        {
-          name: "辽宁",
-          value: 74,
-        },
-        {
-          name: "黑龙江",
-          value: 155,
-        },
-        {
-          name: "湖南",
-          value: 593,
-        },
-        {
-          name: "安徽",
-          value: 480,
-        },
-        {
-          name: "山东",
-          value: 270,
-        },
-        {
-          name: "新疆",
-          value: 29,
-        },
-        {
-          name: "江苏",
-          value: 308,
-        },
-        {
-          name: "浙江",
-          value: 829,
-        },
-        {
-          name: "江西",
-          value: 476,
-        },
-        {
-          name: "湖北",
-          value: 13522,
-        },
-        {
-          name: "广西",
-          value: 139,
-        },
-        {
-          name: "甘肃",
-          value: 55,
-        },
-        {
-          name: "山西",
-          value: 74,
-        },
-        {
-          name: "内蒙古",
-          value: 34,
-        },
-        {
-          name: "陕西",
-          value: 142,
-        },
-        {
-          name: "吉林",
-          value: 42,
-        },
-        {
-          name: "福建",
-          value: 179,
-        },
-        {
-          name: "贵州",
-          value: 56,
-        },
-        {
-          name: "广东",
-          value: 797,
-        },
-        {
-          name: "青海",
-          value: 15,
-        },
-        {
-          name: "西藏",
-          value: 1,
-        },
-        {
-          name: "四川",
-          value: 282,
-        },
-        {
-          name: "宁夏",
-          value: 34,
-        },
-        {
-          name: "海南",
-          value: 79,
-        },
-        {
-          name: "台湾",
-          value: 10,
-        },
-        {
-          name: "香港",
-          value: 15,
-        },
-        {
-          name: "澳门",
-          value: 9,
-        },
-      ])
+let data = reactive([])
+const scdata =reactive({
+  sctoday: '',
+  sctotal: '',
+  cdtoday: '',
+  cdtotal: '',
+  mstoday: '',
+  mstotal: ''
+})
 // 图表配置
-const option = ref({
+const option = reactive({
   legend: {
     orient: "vertical",
     left: "left",
   },
   tooltip: {
     trigger: 'item',
-    formatter: '{b}<br/>确诊人数：{c} '
+    formatter: '{b}<br/>总计确诊：{c} '
   },
   // toolbox: {
   //   show: false,
@@ -181,15 +62,15 @@ const option = ref({
     type: "piecewise",
     pieces: [
       {
-        min: 1000,
+        min: 10000,
         max: 1000000,
-        label: "大于等于1000人",
+        label: "大于等于10000人",
         color: "#372a28",
       },
-      { min: 500, max: 999, label: "确诊500-999人", color: "#4e160f" },
-      { min: 100, max: 499, label: "确诊100-499人", color: "#974236" },
-      { min: 10, max: 99, label: "确诊10-99人", color: "#ee7263" },
-      { min: 1, max: 9, label: "确诊1-9人", color: "#f5bba7" },
+      { min: 5000, max: 9999, label: "确诊5000-9999人", color: "#712117" },
+      { min: 1000, max: 4999, label: "确诊1000-4999人", color: "#a6473b" },
+      { min: 100, max: 999, label: "确诊100-999人", color: "#ee7263" },
+      { min: 1, max: 99, label: "确诊1-99人", color: "#f5bba7" },
     ],
     color: ["#E0022B", "#E09107", "#A3E00B"],
   },
@@ -204,23 +85,56 @@ const option = ref({
     },
   ],
 })
-
+// 获取疫情地图数据
+function getmap(){
+  getchinamap().then((res:any)=>{
+    let chinamap = res.data.data.data.areaTree[2].children
+    data = chinamap.map((item:any)=>{
+      return{
+        name: item.name,
+        value: item.total.confirm
+      }
+    })
+    option.series[0].data=data
+    scdata.sctoday =chinamap[7].today.confirm
+    scdata.sctotal =chinamap[7].total.confirm
+    scdata.cdtoday =chinamap[7].children[0].today.confirm
+    scdata.cdtotal =chinamap[7].children[0].total.confirm
+    scdata.mstoday =chinamap[7].children[13].today.confirm
+    scdata.mstotal =chinamap[7].children[13].total.confirm
+  })
+}
+onMounted(()=>{
+  getmap()
+})
 </script>
 
 <style lang='less' scoped>
 .status{
   display: flex;
+  flex-grow: wrap;
   justify-content: space-around;
   padding: 5px;
   .chart{
-    height: 400px;
-    width: 650px;
+    margin-left: 10%;
+    height: 375px;
+    width: 500px;
   }
   .queryLine{
-  height: 400px;
-  width: 300px;
+    margin-top: 15px;
+    width: 40%;
   h3{
     text-align: center;
+    margin-bottom: 30px;
+  }
+  div{
+    text-align: center;
+    font-size: 15px;
+    margin: 10px 0;
+  }
+  .headline{
+    margin-top: 10px;
+    font-weight: bold;
   }
   }
 }
